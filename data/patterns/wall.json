@@ -1,0 +1,91 @@
+{
+    "description":"A standard wall structure",
+    "cell_type":"standard",
+    "tile_size":{
+        "width":{"cells":1, "repeat":"yes"},
+        "height":{"cells":4, "repeat":"yes"},
+        "depth":{"cells":2, "repeat":"no"}
+    },
+
+    "start_tiles":["start-back", "start-front"],
+
+    "tile_types":{
+        "start-back":{
+            "description":"The left-hand start of the wall with l2 domino facing back.",
+            "layout":[
+                [
+                    ["sideways:90", null],
+                    ["standing:90", "sideways"],
+                    [null, "standing"],
+                    ["sideways", null]
+                ]
+            ],
+            "next": ["middle-front", "any", null]
+        },
+
+        "start-front":{
+            "description":"The left-hand start of the wall with l2 domino facing front.",
+            "layout":[
+                [
+                    ["sideways:90", null],
+                    ["sideways", "standing:-90"],
+                    ["standing", null],
+                    [null, "sideways"]
+                ]
+            ],
+            "next": ["middle-back", "any", null]
+        },
+
+        "middle-back":{
+            "description":"A middle section in the wall with l2 domino facing back.",
+            "layout":[
+                [
+                    ["sideways:90", null],
+                    [null, "sideways"],
+                    ["sideways:90", null],
+                    ["sideways", null]
+                ]
+            ],
+            "next":[ ["middle-front", "end-front"], "any", null ]
+        },
+
+        "middle-front":{
+            "description":"A middle section in the wall with l2 domino facing front.",
+            "layout":[
+                [
+                    ["sideways:90", null],
+                    ["sideways", null],
+                    ["sideways:90", null],
+                    [null, "sideways"]
+                ]
+            ],
+            "next":[ ["middle-back", "end-back"], "any", null ]
+        },
+
+        "end-back":{
+            "description":"A end section in the wall with l2 sideways domino (from the prior tile) facing back.",
+            "layout":[
+                [
+                    ["sideways:90", null],
+                    ["standing:90", null],
+                    [null, "standing:-180"],
+                    [null, null]
+                ]
+            ],
+            "next":[null, "any", null]
+        },
+
+        "end-front":{
+            "description":"A end section in the wall with l2 sideways domino (from the prior tile)  facing front.",
+            "layout":[
+                [
+                    ["sideways:90", null],
+                    [null, "standing:-90"],
+                    ["standing:180", null],
+                    [null, null]
+                ]
+            ],
+            "next":[null, "any", null]
+        }
+    }
+}

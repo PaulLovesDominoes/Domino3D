@@ -1,0 +1,25 @@
+{
+  "unit": "mm",
+
+  "domino": {
+    "width": 24,
+    "height": 48,
+    "depth": 7.5,
+    "positions":{
+        "standing":"w,h,d",
+        "sideways":"h,w,d",
+        "flat":"h,d,w"
+      }
+  },
+
+  "cell_types":{
+    "standard":{
+      "description":"Standard 3D domino structure cell used for most structures.",
+      "domino_origin":[3.75, 0, 3.75],
+
+      "width":{"size":48, "overlap":7.5},
+      "height":{"size":24, "overlap":0},
+      "depth":{"size":48, "overlap":7.5}
+    }
+  }
+}

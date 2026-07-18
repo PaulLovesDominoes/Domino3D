@@ -1,0 +1,19 @@
+
+## Algorithm for creating virtual structures from a pattern
+
+Input arguments:
+* pattern_name:  String - Specifies which named pattern to use to create the structure
+* structure_start: [x,y,z] - A triple of floats specifying where in the three.js space the structure will start
+* structure_size: [width, height, depth] - The physical dimensions (in mm) of the entire structure
+
+The creation loop will be specified as follows:
+
+1. output_objects = []
+1. current_tile_stack = [{type=[starting_tile_type], position=(0,0,0)}]
+1. current_tile = current_tile_stack.pop_top_item()
+1. Create all of the domino objects (e.g. boxes) for current_tile.type
+    - All domino objects for the tile are created relative to (current_tile.position + structure_start)
+    - Add all boxes created to the output_objects list
+1. Is there space to add another tile to the right?
+    - E.g. is (current_tile.position + cell_type.width) < structure.width
+    - If so, then push {type=[]}
