@@ -1,0 +1,115 @@
+{
+    "description":"A standard wall structure",
+    "cell_type":"standard",
+    "tile_size":{
+        "width":{"cells":1, "repeat":"yes"},
+        "height":{"cells":3, "repeat":"yes"},
+        "depth":{"cells":2, "repeat":"no"}
+    },
+
+    "start_tiles":["start-a", "start-b", "start-c"],
+
+    "tile_types":{
+        "start-a":{
+            "layout":[
+                [
+                    ["sideways", "sideways"],
+                    ["sideways:90", null],
+                    ["sideways:90", null]
+                ]
+            ],
+            "next": ["middle-b", "any", null]
+        },
+
+        "start-b":{
+            "layout":[
+                [
+                    ["sideways:90", null],
+                    ["sideways", "sideways"],
+                    ["sideways:90", null]
+                ]
+            ],
+            "next": ["middle-c", "any", null]
+        },
+
+        "start-c":{
+            "layout":[
+                [
+                    ["sideways:90", null],
+                    ["sideways:90", null],
+                    ["sideways", "sideways"]
+                ]
+            ],
+            "next": ["middle-a", "any", null]
+        },
+
+        "middle-a":{
+            "layout":[
+                [
+                    ["sideways", "sideways"],
+                    ["sideways:90", null],
+                    [null, null]
+                ]
+            ],
+            "next": [["middle-b", "end-b"], "any", null]
+        },
+
+
+        "middle-b":{
+            "layout":[
+                [
+                    [null, null],
+                    ["sideways", "sideways"],
+                    ["sideways:90", null]
+                ]
+            ],
+            "next": [["middle-c","end-c"], "any", null]
+        },
+
+
+        "middle-c":{
+            "layout":[
+                [
+                    ["sideways:90", null],
+                    [null, null],
+                    ["sideways", "sideways"]
+                ]
+            ],
+            "next": [["middle-a","end-a"], "any", null]
+        },
+
+
+        "end-a":{
+            "layout":[
+                [
+                    ["sideways:90", null],
+                    ["sideways:90", null],
+                    [null, null]
+                ]
+            ],
+            "next": [null, "any", null]
+        },
+
+        "end-b":{
+            "layout":[
+                [
+                    [null, null],
+                    ["sideways:90", null],
+                    ["sideways:90", null]
+                ]
+            ],
+            "next": [null, "any", null]
+        },
+
+        "end-c":{
+            "layout":[
+                [
+                    ["sideways:90", null],
+                    [null, null],
+                    ["sideways:90", null]
+                ]
+            ],
+            "next": [null, "any", null]
+        }
+    }
+}

@@ -1,0 +1,23 @@
+{
+    "description":"Standard field with domino spacing.",
+    "cell_type":"field",
+    "tile_size":{
+        "width":{"cells":1, "repeat":"yes"},
+        "height":{"cells":1, "repeat":"no"},
+        "depth":{"cells":1, "repeat":"yes"}
+    },
+
+    "start_tiles":["start"],
+
+    "tile_types":{
+        "start":{
+            "description":"There's a single tile type for fields",
+            "layout":[
+                [
+                    ["standing:90"]
+                ]
+            ],
+            "next": ["any", null, "any"]
+        }
+    }
+}

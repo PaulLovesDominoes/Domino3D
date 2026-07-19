@@ -96,11 +96,17 @@ animate();
 // now nothing is rendered.
 // ---------------------------------------------------------------------------
 
-// Load the domino + cell dimensions once. This resolves to the parsed JSON.
-const dimensionsPromise = fetch("/data/dimensions.json").then((r) => {
-  if (!r.ok) throw new Error(`dimensions.json: HTTP ${r.status}`);
-  return r.json();
-});
+// Load the domino + cell dimensions once. This resolves to the parsed JSON. When
+// running from the offline bundle (static/index_click_this_one.html), dist/data.js
+// pre-sets window.EMBEDDED_DOMINO_DATA so no fetch() is needed (fetch() to local files
+// is blocked by browsers when the page is opened via file://); otherwise fetch it, as
+// when served normally (FastAPI or any other HTTP server).
+const dimensionsPromise = window.EMBEDDED_DOMINO_DATA
+  ? Promise.resolve(window.EMBEDDED_DOMINO_DATA.dimensions)
+  : fetch("./data/dimensions.json").then((r) => {
+      if (!r.ok) throw new Error(`dimensions.json: HTTP ${r.status}`);
+      return r.json();
+    });
 
 // Fetch the model + pattern, run the builder, and log the result.
 //   structureType - pattern name, e.g. "wall" (loads data/patterns/<name>.json)
@@ -111,9 +117,14 @@ async function runBuild(structureType, startTile, tilesX, tilesY, tilesZ) {
   let pattern;
   try {
     dimensions = await dimensionsPromise;
-    const res = await fetch(`/data/patterns/${structureType}.json`);
-    if (!res.ok) throw new Error(`HTTP ${res.status}`);
-    pattern = await res.json();
+    if (window.EMBEDDED_DOMINO_DATA) {
+      pattern = window.EMBEDDED_DOMINO_DATA.patterns[structureType];
+      if (!pattern) throw new Error(`unknown structure type "${structureType}"`);
+    } else {
+      const res = await fetch(`./data/patterns/${structureType}.json`);
+      if (!res.ok) throw new Error(`HTTP ${res.status}`);
+      pattern = await res.json();
+    }
   } catch (err) {
     console.error(`Could not load structure type "${structureType}":`, err);
     return;

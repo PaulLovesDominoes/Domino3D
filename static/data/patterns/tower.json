@@ -1,0 +1,211 @@
+{
+    "description":"A standard rectangular cuboid structure (e.g. tower, cube, etc.)",
+    "cell_type":"standard",
+    "tile_size":{
+        "width":{"cells":1, "repeat":"yes"},
+        "height":{"cells":4, "repeat":"yes"},
+        "depth":{"cells":1, "repeat":"yes"}
+    },
+
+    "start_tiles":["start"],
+
+    "tile_types":{
+        "start":{
+            "layout":[
+                [
+                    ["sideways:90"],
+                    ["sideways"],
+                    ["sideways:90"],
+                    ["sideways"]
+                ]
+            ],
+            "next": [["front-a","front-end"], "any", ["middle-a-start","rear-start"]]
+        },
+
+        "front-a":{
+            "layout":[
+                [
+                    ["sideways:90"],
+                    [null],
+                    ["sideways"],
+                    [null]
+                ]
+            ],
+            "next": ["front-b", "any", ["middle-aa","rear-a"]]
+        },
+
+        "front-b":{
+            "layout":[
+                [
+                    ["sideways:90"],
+                    ["sideways"],
+                    [null],
+                    ["sideways"]
+                ]
+            ],
+            "next": [["front-a","front-end"], "any", ["middle-ab","rear-b"]]
+        },
+
+        "front-end":{
+            "layout":[
+                [
+                    ["sideways:90"],
+                    [null],
+                    ["sideways:90"],
+                    [null]
+                ]
+            ],
+            "next": [null, "any", ["middle-a-end","rear-end"]]
+        },
+
+
+
+        "middle-a-start":{
+            "layout":[
+                [
+                    [null],
+                    ["sideways"],
+                    [null],
+                    ["sideways:90"]
+                ]
+            ],
+            "next": [["middle-aa","middle-a-end"], "any", "middle-b-start"]
+        },
+
+        "middle-aa":{
+            "layout":[
+                [
+                    [null],
+                    [null],
+                    ["sideways"],
+                    ["sideways:90"]
+                ]
+            ],
+            "next": ["middle-ab", "any", "middle-ba"]
+        },
+
+        "middle-ab":{
+            "layout":[
+                [
+                    [null],
+                    ["sideways"],
+                    [null],
+                    ["sideways:90"]
+                ]
+            ],
+            "next": [["middle-aa","middle-a-end"], "any", "middle-bb"]
+        },
+
+        "middle-a-end":{
+            "layout":[
+                [
+                    [null],
+                    [null],
+                    [null],
+                    ["sideways:90"]
+                ]
+            ],
+            "next": [null, "any", "middle-b-end"]
+        },
+
+
+
+        "middle-b-start":{
+            "layout":[
+                [
+                    ["sideways:90"],
+                    ["sideways"],
+                    ["sideways:90"],
+                    [null]
+                ]
+            ],
+            "next": [["middle-ba","middle-b-end"], "any", ["middle-a-start","rear-start"]]
+        },
+
+        "middle-ba":{
+            "layout":[
+                [
+                    ["sideways:90"],
+                    [null],
+                    ["sideways"],
+                    [null]
+                ]
+            ],
+            "next": ["middle-bb", "any", ["middle-aa","rear-a"]]
+        },
+
+        "middle-bb":{
+            "layout":[
+                [
+                    ["sideways:90"],
+                    ["sideways"],
+                    [null],
+                    [null]
+                ]
+            ],
+            "next": [["middle-ba","middle-b-end"], "any", ["middle-ab","rear-b"]]
+        },
+
+        "middle-b-end":{
+            "layout":[
+                [
+                    ["sideways:90"],
+                    [null],
+                    ["sideways:90"],
+                    [null]
+                ]
+            ],
+            "next": [null, "any", ["middle-a-end","rear-end"]]
+        },
+
+
+
+        "rear-start":{
+            "layout":[
+                [
+                    [null],
+                    ["sideways"],
+                    [null],
+                    ["sideways"]
+                ]
+            ],
+            "next": [["rear-a","rear-end"], "any", null]
+        },
+
+        "rear-a":{
+            "layout":[
+                [
+                    [null],
+                    [null],
+                    ["sideways"],
+                    [null]
+                ]
+            ],
+            "next": ["rear-b", "any", null]
+        },
+
+        "rear-b":{
+            "layout":[
+                [
+                    [null],
+                    ["sideways"],
+                    [null],
+                    ["sideways"]
+                ]
+            ],
+            "next": [["rear-a","rear-end"], "any", null]
+        },
+
+        "rear-end":{
+            "layout":[
+                [
+                    [null],
+                    [null],
+                    [null],
+                    [null]
+                ]
+            ],
+            "next": [null, "any", null]
+        }
+    }
+}

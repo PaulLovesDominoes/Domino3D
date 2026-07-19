@@ -26,39 +26,76 @@ export function candidateTiles(nextEntry, tileTypes) {
   return [nextEntry];
 }
 
-// Build the left-to-right (X) sequence of tile types, starting from `startTile`
-// and following each tile's `next` rule (index 0 is the +X neighbour). The last
-// tile must be an "end" tile (its own next[0] is null); earlier tiles must be
-// continuing tiles (next[0] not null). Any anomalies are appended to `warnings`.
-export function chooseXSequence(pattern, startTile, count, warnings = []) {
+// Fill one Z row's left-to-right (X) sequence of tile types, starting from
+// `rowStart` and following each tile's `next` rule (index 0 is the +X neighbour).
+// The last tile must be an X-end tile (its own next[0] is null); earlier tiles
+// must be continuing tiles (next[0] not null). Anomalies are appended to `warnings`.
+function calculateSequenceX(pattern, rowStart, countX, warnings) {
   const tileTypes = pattern.tile_types;
-  const seq = [startTile];
-  for (let i = 1; i < count; i++) {
-    const prev = tileTypes[seq[i - 1]];
+  const row = [rowStart];
+  for (let i = 1; i < countX; i++) {
+    const prev = tileTypes[row[i - 1]];
     const candidates = candidateTiles(prev.next[0], tileTypes);
     if (candidates.length === 0) {
       warnings.push(
-        `No tile can follow "${seq[i - 1]}" in +X; stopping the sequence early at ${i} of ${count} tiles.`
+        `No tile can follow "${row[i - 1]}" in +X; stopping the row early at ${i} of ${countX} tiles.`
       );
       break;
     }
-    const isLast = i === count - 1;
+    const isLast = i === countX - 1;
     const wantEnd = (name) => tileTypes[name].next[0] === null;
     let chosen = candidates.find((name) => (isLast ? wantEnd(name) : !wantEnd(name)));
     if (chosen === undefined) {
       chosen = candidates[0];
       warnings.push(
-        `No ${isLast ? "end" : "continuing"} tile among [${candidates.join(", ")}] after "${seq[i - 1]}"; falling back to "${chosen}".`
+        `No ${isLast ? "end" : "continuing"} tile among [${candidates.join(", ")}] after "${row[i - 1]}"; falling back to "${chosen}".`
       );
     }
-    seq.push(chosen);
+    row.push(chosen);
   }
-  return seq;
+  return row;
+}
+
+// Build the full 2D sequence of tile types, indexed sequence[z][x]. Row z=0 starts
+// from `startTile`; each later Z row's start tile is chosen from the more-forward
+// row's start tile (sequence[z-1][0]) via its `next` rule (index 2 is the +Z
+// neighbour), using the same end-vs-middle logic as X. The rest of each row's X
+// tiles are then filled in by calculateSequenceX. Anomalies append to `warnings`.
+export function calculateSequenceZX(pattern, startTile, countX, countZ, warnings = []) {
+  const tileTypes = pattern.tile_types;
+  const sequence = [];
+  for (let z = 0; z < countZ; z++) {
+    let rowStart;
+    if (z === 0) {
+      rowStart = startTile;
+    } else {
+      const prevStart = sequence[z - 1][0];
+      const candidates = candidateTiles(tileTypes[prevStart].next[2], tileTypes);
+      if (candidates.length === 0) {
+        warnings.push(
+          `No tile can follow "${prevStart}" in +Z; stopping at ${z} of ${countZ} Z rows.`
+        );
+        break;
+      }
+      const isLastZ = z === countZ - 1;
+      const wantZEnd = (name) => tileTypes[name].next[2] === null;
+      let chosen = candidates.find((name) => (isLastZ ? wantZEnd(name) : !wantZEnd(name)));
+      if (chosen === undefined) {
+        chosen = candidates[0];
+        warnings.push(
+          `No ${isLastZ ? "Z-end" : "continuing"} tile among [${candidates.join(", ")}] after "${prevStart}" in +Z; falling back to "${chosen}".`
+        );
+      }
+      rowStart = chosen;
+    }
+    sequence.push(calculateSequenceX(pattern, rowStart, countX, warnings));
+  }
+  return sequence;
 }
 
 // Compute the list of dominoes for a structure. Pure: no I/O, no logging.
-//   dimensions - parsed data/dimensions.json
-//   pattern    - parsed data/patterns/<type>.json
+//   dimensions - parsed static/data/dimensions.json
+//   pattern    - parsed static/data/patterns/<type>.json
 //   startTile  - one of the pattern's start_tiles
 //   tilesX/Y/Z - integer tile counts per axis
 // Returns { error, warnings, sequence, countX, countY, countZ, dominoes }.
@@ -111,13 +148,14 @@ export function buildDominoStructure(dimensions, pattern, startTile, tilesX, til
   const countY = clamp(tilesY, pattern.tile_size.height.repeat, "Y");
   const countZ = clamp(tilesZ, pattern.tile_size.depth.repeat, "Z");
 
-  const sequence = chooseXSequence(pattern, startTile, countX, warnings);
+  const sequence = calculateSequenceZX(pattern, startTile, countX, countZ, warnings);
 
   const dominoes = [];
   for (let tileY = 0; tileY < countY; tileY++) {
-    for (let tileZ = 0; tileZ < countZ; tileZ++) {
-      for (let tileX = 0; tileX < countX; tileX++) {
-        const layout = pattern.tile_types[sequence[tileX]].layout; // [X][Y][Z]
+    for (let tileZ = 0; tileZ < sequence.length; tileZ++) {
+      const row = sequence[tileZ];
+      for (let tileX = 0; tileX < row.length; tileX++) {
+        const layout = pattern.tile_types[row[tileX]].layout; // [X][Y][Z]
         for (let lx = 0; lx < tileCells.x; lx++) {
           for (let ly = 0; ly < tileCells.y; ly++) {
             for (let lz = 0; lz < tileCells.z; lz++) {

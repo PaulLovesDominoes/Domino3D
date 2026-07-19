@@ -25,14 +25,6 @@
     .controls-fields input[type="number"] { width: 70px; }
     #controls.collapsed .controls-fields { display: none; }
   </style>
-  <script type="importmap">
-    {
-      "imports": {
-        "three": "https://cdn.jsdelivr.net/npm/three@0.169.0/build/three.module.js",
-        "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.169.0/examples/jsm/"
-      }
-    }
-  </script>
 </head>
 <body>
   <form id="controls" onsubmit="return false">
@@ -57,7 +49,7 @@
           <option value="start">start</option>
         </select>
       </label>
-      <label>Number of Tiles for Structure:</label> 
+      <label>Number of Tiles for Structure:</label>
       <label>X
         <input type="number" name="tilesX" step="1" min="1" />
       </label>
@@ -106,6 +98,13 @@
       populateStartTiles();
     })();
   </script>
-  <script type="module" src="/js/scene.js"></script>
+  <!-- Offline entry point: plain classic scripts (not type="module"), so this works
+       when double-clicked directly (file://) with no server at all. dist/data.js sets
+       window.EMBEDDED_DOMINO_DATA; dist/bundle.js is scene.js + structure_builder.js +
+       Three.js + OrbitControls bundled into one self-contained script. Regenerate both
+       via build_offline.bat (or `npm run build`) after changing scene.js,
+       structure_builder.js, or any static/data/** file. -->
+  <script src="dist/data.js"></script>
+  <script src="dist/bundle.js"></script>
 </body>
 </html>

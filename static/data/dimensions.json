@@ -20,6 +20,24 @@
       "width":{"size":48, "overlap":7.5},
       "height":{"size":24, "overlap":0},
       "depth":{"size":48, "overlap":7.5}
+    },
+    
+    "field":{
+      "description":"Standard field spacing",
+      "domino_origin":[3.75, 0, 3.75],
+
+      "width":{"size":15, "overlap":0},
+      "height":{"size":48, "overlap":0},
+      "depth":{"size":31.5, "overlap":0}
+    },
+
+    "sideways-field":{
+      "description":"Sideways field spacing",
+      "domino_origin":[3.75, 0, 3.75],
+
+      "width":{"size":15, "overlap":0},
+      "height":{"size":24, "overlap":0},
+      "depth":{"size":55.5, "overlap":0}
     }
   }
 }

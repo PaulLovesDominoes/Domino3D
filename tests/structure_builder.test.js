@@ -6,7 +6,7 @@ import { dirname, join } from "node:path";
 
 import {
   parseCell,
-  chooseXSequence,
+  calculateSequenceZX,
   buildDominoStructure,
   dominoToPrism,
 } from "../static/js/structure_builder.js";
@@ -14,8 +14,9 @@ import {
 // Load the real data-model fixtures from disk (no server needed).
 const root = join(dirname(fileURLToPath(import.meta.url)), "..");
 const readJson = (rel) => JSON.parse(readFileSync(join(root, rel), "utf8"));
-const dimensions = readJson("data/dimensions.json");
-const wall = readJson("data/patterns/wall.json");
+const dimensions = readJson("static/data/dimensions.json");
+const wall = readJson("static/data/patterns/wall.json");
+const tower = readJson("static/data/patterns/tower.json");
 
 test("parseCell splits position and rotation, defaulting rotation to 0", () => {
   assert.deepEqual(parseCell("standing:90"), { position: "standing", rotation: 90 });
@@ -23,11 +24,29 @@ test("parseCell splits position and rotation, defaulting rotation to 0", () => {
   assert.deepEqual(parseCell("standing:-180"), { position: "standing", rotation: -180 });
 });
 
-test("chooseXSequence follows the wall's next rules to an end tile", () => {
-  assert.deepEqual(chooseXSequence(wall, "start-back", 3), [
-    "start-back",
-    "middle-front",
-    "end-front",
+test("calculateSequenceZX: single Z row follows the wall's +X next rules", () => {
+  assert.deepEqual(calculateSequenceZX(wall, "start-back", 3, 1), [
+    ["start-back", "middle-front", "end-front"],
+  ]);
+});
+
+test("calculateSequenceZX: 2 Z rows pick a Z-end start for the last row", () => {
+  // start.next[2] = ["middle-a-start","rear-start"]; rear-start has next[2]===null
+  // (Z-end), so the last (z=1) row starts at rear-start.
+  assert.deepEqual(calculateSequenceZX(tower, "start", 2, 2), [
+    ["start", "front-end"],
+    ["rear-start", "rear-end"],
+  ]);
+});
+
+test("calculateSequenceZX: 4 Z rows follow continuing then Z-end +Z rules", () => {
+  // Each row's start derives from the prior row's start via next[2]:
+  // start -> middle-a-start (continuing) -> middle-b-start (continuing) -> rear-start (Z-end).
+  assert.deepEqual(calculateSequenceZX(tower, "start", 2, 4), [
+    ["start", "front-end"],
+    ["middle-a-start", "middle-a-end"],
+    ["middle-b-start", "middle-b-end"],
+    ["rear-start", "rear-end"],
   ]);
 });
 
@@ -74,6 +93,17 @@ test("an invalid start tile returns an error and no dominoes", () => {
   const result = buildDominoStructure(dimensions, wall, "bogus", 1, 1, 1);
   assert.ok(result.error);
   assert.equal(result.dominoes.length, 0);
+});
+
+test("tower builds a multi-row-deep structure through the 2D sequence path", () => {
+  const result = buildDominoStructure(dimensions, tower, "start", 2, 1, 2);
+  assert.equal(result.error, null);
+  assert.deepEqual(result.warnings, []);
+  // Front row: start (4 dominoes) + front-end (2); rear row: rear-start (2) + rear-end (0).
+  assert.equal(result.dominoes.length, 8);
+  // The rear Z row must render behind the front row (negative Z), proving the second
+  // row uses its own tiles rather than reusing the front row.
+  assert.ok(result.dominoes.some((d) => d.z < 0));
 });
 
 // Compare a {x,y,z} point to an expected one within a tolerance (rotating by 90°

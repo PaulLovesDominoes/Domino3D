@@ -1,6 +1,6 @@
 # dimensions.json reference
 
-Schema and conventions for `data/dimensions.json`. 
+Schema and conventions for `dimensions.json`. 
 
 In this document, X, Y, and Z refer to standard three.js dimensions (e.g. like viewing a scene).
 
@@ -47,7 +47,7 @@ Each cell type can have the following elements:
 
 Each named structure cell can have the following sub-objects:
 - `domino_origin` - specifies an [x,y,z] point the relative origin point for dominoes used in this type of cell.
-    - See data/patterns.md for more information.
+    - See patterns.md for more information.
 
 - `width` - The physical X width of the cell
 - `height` - The physical Y height of the cell

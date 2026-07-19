@@ -1,0 +1,28 @@
+{
+    "description":"A 1x1 tower, with 2 dominoes on every layer",
+    "cell_type":"standard",
+    "tile_size":{
+        "width":{"cells":2, "repeat":"no"},
+        "height":{"cells":2, "repeat":"yes"},
+        "depth":{"cells":2, "repeat":"no"}
+    },
+
+    "start_tiles":["start"],
+
+    "tile_types":{
+        "start":{
+            "description":"The entire 1x1 tower structure is a single tile type.",
+            "layout":[
+                [
+                    ["sideways:90", null],
+                    ["sideways", "sideways"]
+                ],
+                [
+                    ["sideways:90", null],
+                    [null, null]
+                ]
+            ],
+            "next": [null, "any", null]
+        }
+    }
+}

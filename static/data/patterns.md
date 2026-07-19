@@ -1,6 +1,6 @@
 # <pattern-name>.json reference
 
-Schema and conventions for the pattern data files in `data/patterns/<pattern-name>.json`. The name of the pattern will be the same as the file name, minus the ".json" extension. For example, the name of the pattern in the "wall.json" fill will be "wall".
+Schema and conventions for the pattern data files in `patterns/<pattern-name>.json`. The name of the pattern will be the same as the file name, minus the ".json" extension. For example, the name of the pattern in the "wall.json" fill will be "wall".
 
 The purpoose of a pattern file is to specify how to create repeating patterns of dominoes in three dimensions to create buildable domino structures.
 
@@ -50,7 +50,7 @@ When reaching a structure boundary, tiles should be chosen where the `next` elem
 
 - `description` - The user-friendly description of the pattern
 - `cell_type` - The name of the cell type that specifies the dimensions and overlap of the cell when repeated.
-    - Available cell types are listed in the data/dimensions.json file.
+    - Available cell types are listed in the dimensions.json file.
 - `start_tiles` - A list of named tile types which can start the structure
     -  When building the structure, the caller must specify which of these tile types to start with
 
