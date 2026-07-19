@@ -46,7 +46,7 @@
                     ["sideways", null]
                 ]
             ],
-            "next":[ ["middle-front", "end-front"], "any", null ]
+            "next":[ ["middle-front", "end-back"], "any", null ]
         },
 
         "middle-front":{
@@ -59,7 +59,7 @@
                     [null, "sideways"]
                 ]
             ],
-            "next":[ ["middle-back", "end-back"], "any", null ]
+            "next":[ ["middle-back", "end-front"], "any", null ]
         },
 
         "end-back":{

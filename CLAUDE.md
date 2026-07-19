@@ -28,13 +28,20 @@ python -m uvicorn main:app --reload
 ```
 Then browse to `http://127.0.0.1:8000`.
 
-There is no build step, linter, or test suite in this repo.
+Run the unit tests (Node's built-in test runner; no dependencies to install):
+```
+run_tests.bat
+```
+or `npm test`, or `node --test`. Tests live in `tests/` and cover the pure domino logic.
+
+There is no build step or linter in this repo.
 
 ## Architecture
 
 - `main.py` — FastAPI app. Mounts `static/` at `/static` and returns `static/index.html` at `/`. Any new backend logic (API routes, etc.) would go here.
 - `static/index.html` — page shell. Loads Three.js as an ES module directly from a CDN (jsdelivr) via an `importmap` — there is no bundler/npm build; a different Three.js version is changed by editing the importmap URL in this file.
-- `static/js/scene.js` — all client-side scene logic (renderer, camera, lights, meshes, animation loop) as a single ES module imported by `index.html`.
+- `static/js/scene.js` — all client-side scene logic (renderer, camera, lights, meshes, animation loop) as a single ES module imported by `index.html`. Also loads the JSON data model over HTTP and calls the builder to log a structure to the console.
+- `static/js/structure_builder.js` — the pure, dependency-free domino generation logic (no THREE/DOM/fetch), imported by both `scene.js` and the tests, so the tests exercise the real shipping code.
 
 ## Reload behavior (important, easy to get wrong)
 

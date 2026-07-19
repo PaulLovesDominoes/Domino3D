@@ -1,0 +1,8 @@
+{
+  "name": "domino3d",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "test": "node --test"
+  }
+}
